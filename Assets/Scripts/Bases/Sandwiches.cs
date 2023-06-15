@@ -5,15 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Sandwiches", order = 1)]
 public class Sandwiches : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Sprite icon;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public string nameSandwich;
+
+    public Ingredients[] ingredients;
 }
+
+public enum Ingredients {Bread, Ham, Cheese, Lettuce, Ketchup}
