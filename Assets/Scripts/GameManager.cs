@@ -10,12 +10,17 @@ public class GameManager : MonoBehaviour
     public GameObject[] persons;
 
     public TextMeshProUGUI initializeNumberText;
+    public TextMeshProUGUI[] nameIngredients;
+    public TextMeshProUGUI[] BorderAccept;
     public CanvasGroup initializeNumberTextAlpha;
     public CanvasGroup screen;
     public CanvasGroup[] menu;
 
+    public RectTransform menuIngredients;
+
     public float initializeNumber;
     public bool initializeGame;
+    public bool[] buttonBool;
 
     // Start is called before the first frame update
     void Start()
@@ -56,14 +61,21 @@ public class GameManager : MonoBehaviour
         {
             initializeNumber = 0;
 
-            for (int i = 0; i < persons.Length; i++)
-            {
-                persons[i].SetActive(true);
-            }
-
-            LeanTween.alphaCanvas(initializeNumberTextAlpha,0,0.5f);
-            LeanTween.alphaCanvas(screen, 0, 1f);
+            StartGame();
         }
+    }
+
+    void StartGame()
+    {
+        for (int i = 0; i < persons.Length; i++)
+        {
+            persons[i].SetActive(true);
+        }
+
+        LeanTween.alphaCanvas(initializeNumberTextAlpha, 0, 0.5f);
+        LeanTween.alphaCanvas(screen, 0, 1f);
+
+        LeanTween.move(menuIngredients, new Vector2(0, 75f), 1f);
     }
 
     public void ButtonPlay()
@@ -75,6 +87,43 @@ public class GameManager : MonoBehaviour
             LeanTween.alphaCanvas(menu[i], 0, 0.5f);
             menu[i].blocksRaycasts = false;
             menu[i].interactable = false;
+        }
+    }
+
+    public void ButtonInteraction(int numberSelection)
+    {
+        
+
+        for (int i = 0; i < 3; i++)
+        {
+            buttonBool[numberSelection] = !buttonBool[numberSelection];
+        }
+
+        if (buttonBool[numberSelection])
+        {
+            BorderAccept[numberSelection].text = "x";
+        }
+        else
+        {
+            BorderAccept[numberSelection].text = "";
+        }
+
+        switch (numberSelection)
+        {
+            case 0:
+                break;
+
+            case 1:
+                break;
+
+            case 2:
+                break;
+
+            case 3:
+                break;
+
+            case 4:
+                break;
         }
     }
 }
