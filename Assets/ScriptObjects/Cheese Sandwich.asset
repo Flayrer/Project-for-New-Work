@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b065681f5bf1f8c4b9c3678da91bf859, type: 3}
   m_Name: Cheese Sandwich
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -367483306, guid: 21f2f49340adcfd42bfe07211bbf3044, type: 3}
   nameSandwich: Cheese Sandwich
   ingredients: 000000000200000004000000
