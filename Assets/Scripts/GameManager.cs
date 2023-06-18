@@ -14,22 +14,32 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI[] nameIngredients;
     public TextMeshProUGUI[] BorderAccept;
     public TextMeshProUGUI nameSandwich;
+    public TextMeshProUGUI timerGameText;
+    public TextMeshProUGUI moneyText;
     public CanvasGroup initializeNumberTextAlpha;
     public CanvasGroup screen;
     public CanvasGroup[] menu;
-
+    public GameObject moneyObject;
     public RectTransform menuIngredients;
     public Image iconSandwiches;
     public Button buttonSandwiches;
 
     public float initializeNumber;
+    public float timerGame;
     public bool initializeGame;
     public bool[] buttonBool;
+    public int money;
+
+    public int id;
 
     // Start is called before the first frame update
     void Start()
     {
+        timerGameText.gameObject.SetActive(false);
+        moneyObject.SetActive(false);
+        timerGame = 120f;
         initializeNumber = 6f;
+        money = 0;
 
         for (int i = 0; i < persons.Length; i++)
         {
@@ -67,10 +77,26 @@ public class GameManager : MonoBehaviour
 
             StartGame();
         }
+
+        if (money <= 0)
+        {
+            money = 0;
+            moneyText.text = $": {money}";
+        }
     }
 
     void StartGame()
     {
+        timerGameText.gameObject.SetActive(true);
+        moneyObject.SetActive(true);
+        timerGame -= Time.deltaTime;
+        timerGameText.text = $"{(int)timerGame}";
+
+        if (timerGame <= 0)
+        {
+            timerGame = 0;
+        }
+
         Persons();
 
         LeanTween.alphaCanvas(initializeNumberTextAlpha, 0, 0.5f);
@@ -91,6 +117,7 @@ public class GameManager : MonoBehaviour
     {
         if (buttonBool[0] == true && buttonBool[1] == true && buttonBool[2] == true)
         {
+            id = 0;
             buttonBool[3] = false;
             buttonBool[4] = false;
             BorderAccept[3].text = "";
@@ -104,6 +131,7 @@ public class GameManager : MonoBehaviour
         }
         else if (buttonBool[0] == true && buttonBool[1] == true && buttonBool[3] == true)
         {
+            id = 1;
             buttonBool[2] = false;
             buttonBool[4] = false;
             BorderAccept[2].text = "";
@@ -117,6 +145,7 @@ public class GameManager : MonoBehaviour
         }
         else if (buttonBool[0] == true && buttonBool[1] == true && buttonBool[4] == true)
         {
+            id = 2;
             buttonBool[2] = false;
             buttonBool[3] = false;
             BorderAccept[2].text = "";
@@ -130,6 +159,7 @@ public class GameManager : MonoBehaviour
         }
         else if (buttonBool[0] == true && buttonBool[2] == true && buttonBool[3] == true)
         {
+            id = 3;
             buttonBool[1] = false;
             buttonBool[4] = false;
             BorderAccept[1].text = "";
@@ -143,6 +173,7 @@ public class GameManager : MonoBehaviour
         }
         else if (buttonBool[0] == true && buttonBool[2] == true && buttonBool[4] == true)
         {
+            id = 4;
             buttonBool[1] = false;
             buttonBool[3] = false;
             BorderAccept[1].text = "";
@@ -156,6 +187,7 @@ public class GameManager : MonoBehaviour
         }
         else if (buttonBool[0] == true && buttonBool[3] == true && buttonBool[4] == true)
         {
+            id = 5;
             buttonBool[1] = false;
             buttonBool[2] = false;
             BorderAccept[1].text = "";
@@ -323,5 +355,37 @@ public class GameManager : MonoBehaviour
         }
 
         Conditions();
+    }
+
+    public void ButtonConfirm()
+    {
+        for (int i = 0; i < buttonBool.Length; i++)
+        {
+            buttonBool[i] = false;
+            BorderAccept[i].text = "";
+        }
+
+        nameIngredients[0].text = "1- -";
+        nameIngredients[1].text = "2- -";
+        nameIngredients[2].text = "3- -";
+
+        nameSandwich.text = "-";
+        iconSandwiches.sprite = null;
+        buttonSandwiches.interactable = false;
+
+        persons[0].GetComponent<Persons>().buySandwich = true;
+
+        if (id == persons[0].GetComponent<Persons>().numberRandomSandwiches)
+        {
+            money++;
+            moneyText.text = $": {money}";
+            Debug.Log("Acertou!");
+        }
+        else
+        {
+            money--;
+            moneyText.text = $": {money}";
+            Debug.Log("Errou!");
+        }
     }
 }

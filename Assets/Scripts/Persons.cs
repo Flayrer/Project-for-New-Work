@@ -21,9 +21,6 @@ public class Persons : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pointSeller = GameObject.Find("Seller");
-        finishPoint[0] = GameObject.Find("Finish Point 1");
-        finishPoint[1] = GameObject.Find("Finish Point 2");
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
