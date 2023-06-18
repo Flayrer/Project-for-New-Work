@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public CanvasGroup[] menu;
     public GameObject moneyObject;
     public RectTransform menuIngredients;
+    public RectTransform menuInformations;
+    public GameObject buttonInformations;
     public Image iconSandwiches;
     public Button buttonSandwiches;
 
@@ -37,6 +39,7 @@ public class GameManager : MonoBehaviour
     {
         timerGameText.gameObject.SetActive(false);
         moneyObject.SetActive(false);
+        buttonInformations.SetActive(false);
         timerGame = 120f;
         initializeNumber = 6f;
         money = 0;
@@ -89,6 +92,7 @@ public class GameManager : MonoBehaviour
     {
         timerGameText.gameObject.SetActive(true);
         moneyObject.SetActive(true);
+        buttonInformations.SetActive(true);
         timerGame -= Time.deltaTime;
         timerGameText.text = $"{(int)timerGame}";
 
@@ -244,6 +248,20 @@ public class GameManager : MonoBehaviour
             LeanTween.alphaCanvas(menu[i], 0, 0.5f);
             menu[i].blocksRaycasts = false;
             menu[i].interactable = false;
+        }
+    }
+
+    public void ButtonMenuInformations(bool selection)
+    {
+        selection = !selection;
+
+        if (selection)
+        {
+            LeanTween.move(menuInformations, new Vector2(0, 0), 1f);
+        }
+        else
+        {
+            LeanTween.move(menuInformations, new Vector2(0, 500f), 1f);
         }
     }
 
