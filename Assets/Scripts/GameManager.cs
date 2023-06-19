@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI nameSandwich;
     public TextMeshProUGUI timerGameText;
     public TextMeshProUGUI moneyText;
+    public TextMeshProUGUI score;
     public CanvasGroup initializeNumberTextAlpha;
     public CanvasGroup screen;
     public CanvasGroup[] menu;
@@ -25,11 +27,17 @@ public class GameManager : MonoBehaviour
     public GameObject buttonInformations;
     public Image iconSandwiches;
     public Button buttonSandwiches;
+    public GameObject ScoreObject;
+
+    public CanvasGroup[] actionCanvas;
+
+    public PlayableDirector playableDirector;
 
     public float initializeNumber;
     public float timerGame;
     public bool initializeGame;
     public bool[] buttonBool;
+    public bool selection;
     public int money;
 
     public int id;
@@ -37,6 +45,12 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playableDirector.Pause();
+        playableDirector.time = 0f;
+        playableDirector.Evaluate();
+        playableDirector.Play();
+
+        ScoreObject.SetActive(false);
         timerGameText.gameObject.SetActive(false);
         moneyObject.SetActive(false);
         buttonInformations.SetActive(false);
@@ -61,7 +75,6 @@ public class GameManager : MonoBehaviour
 
     void Timer()
     {
-        initializeNumberTextAlpha.alpha = 1f;
         initializeNumber -= Time.deltaTime;
 
         if (initializeNumber <= 6f)
@@ -86,6 +99,33 @@ public class GameManager : MonoBehaviour
             money = 0;
             moneyText.text = $": {money}";
         }
+
+        if (timerGame <= 0)
+        {
+            for (int i = 0; i < persons.Length; i++)
+            {
+                persons[i].SetActive(false);
+            }
+
+            Time.timeScale = 0f;
+
+            for (int x = 0; x < actionCanvas.Length; x++)
+            {
+                actionCanvas[x].alpha = 0f;
+                actionCanvas[x].interactable = false;
+                actionCanvas[x].blocksRaycasts = false;
+            }
+
+            timerGameText.gameObject.SetActive(false);
+            moneyObject.SetActive(false);
+            buttonInformations.SetActive(false);
+
+            screen.alpha = 0.5f;
+
+            score.text = $"{money}";
+
+            ScoreObject.SetActive(true);
+        }
     }
 
     void StartGame()
@@ -102,11 +142,6 @@ public class GameManager : MonoBehaviour
         }
 
         Persons();
-
-        LeanTween.alphaCanvas(initializeNumberTextAlpha, 0, 0.5f);
-        LeanTween.alphaCanvas(screen, 0, 1f);
-
-        LeanTween.move(menuIngredients, new Vector2(0, 75f), 1f);
     }
 
     void Persons()
@@ -241,6 +276,8 @@ public class GameManager : MonoBehaviour
 
     public void ButtonPlay()
     {
+        playableDirector.Pause();
+        initializeNumberTextAlpha.alpha = 1f;
         initializeGame = true;
 
         for (int i = 0; i < menu.Length; i++)
@@ -249,9 +286,11 @@ public class GameManager : MonoBehaviour
             menu[i].blocksRaycasts = false;
             menu[i].interactable = false;
         }
+
+        StartCoroutine(StartInformations());
     }
 
-    public void ButtonMenuInformations(bool selection)
+    public void ButtonMenuInformations()
     {
         selection = !selection;
 
@@ -391,19 +430,35 @@ public class GameManager : MonoBehaviour
         iconSandwiches.sprite = null;
         buttonSandwiches.interactable = false;
 
-        persons[0].GetComponent<Persons>().buySandwich = true;
+        for (int x = 0; x < persons.Length; x++)
+        {
+            persons[x].GetComponent<Persons>().buySandwich = true;
 
-        if (id == persons[0].GetComponent<Persons>().numberRandomSandwiches)
-        {
-            money++;
-            moneyText.text = $": {money}";
-            Debug.Log("Acertou!");
+            if (id == persons[x].GetComponent<Persons>().numberRandomSandwiches)
+            {
+                money++;
+                moneyText.text = $": {money}";
+                Debug.Log("Acertou!");
+            }
+            else
+            {
+                money--;
+                moneyText.text = $": {money}";
+                Debug.Log("Errou!");
+            }
         }
-        else
-        {
-            money--;
-            moneyText.text = $": {money}";
-            Debug.Log("Errou!");
-        }
+    }
+
+    public void ButtonRestart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    IEnumerator StartInformations()
+    {
+        yield return new WaitForSeconds(6f);
+        LeanTween.alphaCanvas(initializeNumberTextAlpha, 0, 0.5f);
+        LeanTween.alphaCanvas(screen, 0, 1f);
+        LeanTween.move(menuIngredients, new Vector2(0, 75f), 1f);
     }
 }
